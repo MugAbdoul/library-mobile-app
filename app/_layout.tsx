@@ -1,17 +1,23 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { StatusBar, useColorScheme } from 'react-native';
+import { ThemeProvider as PaperProvider, useTheme } from '@/hooks/ThemeProvider'; // Adjust the import path as per your file structure
+import { DefaultTheme, DarkTheme } from '@react-navigation/native'; // Adjust the import based on your theme setup
+
 import 'react-native-reanimated';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const { theme } = useTheme();
+
   const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'mon-regular': require('../assets/fonts/Montserrat-Regular.ttf'),
+    'mon-bold': require('../assets/fonts/Montserrat-Bold.ttf'),
+    'mon-semiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
   });
 
   useEffect(() => {
@@ -25,10 +31,11 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <PaperProvider>
+      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
-    </ThemeProvider>
+    </PaperProvider>
   );
 }
