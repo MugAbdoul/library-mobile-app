@@ -11,17 +11,14 @@ const TabsLayout = () => {
   return (
     <ThemeProvider value={theme.dark ? DarkTheme : DefaultTheme}>
       <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
-      <Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: 'green', }}>
-        <Tabs.Screen 
-          name='index'
-          options={{
-            title: 'Explore',
-            tabBarIcon:  ({ color, focused, size }) => (
-              <Ionicons name={focused? 'home' : 'home-outline'} size={size} color={color}/>
-            ),
-
+      <Tabs 
+        screenOptions={{ 
+          headerShown: false, 
+          // tabBarActiveTintColor: 'green'
           }}
-        />
+          initialRouteName='index'
+          >
+        
         <Tabs.Screen 
           name='search'
           options={{
@@ -29,6 +26,16 @@ const TabsLayout = () => {
             tabBarIcon:  ({ color, focused, size }) => (
               <Ionicons name={focused? 'search' : 'search-sharp'} size={size} color={color}/>
             ),
+
+          }}
+        />
+        <Tabs.Screen 
+          name='index'
+          options={{
+            title: 'Explore',
+            tabBarIcon:  ({ color, focused, size }) => (
+              <Ionicons name={focused? 'home' : 'home-outline'} size={size} color={color}/>
+            )
 
           }}
         />

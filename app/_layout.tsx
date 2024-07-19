@@ -35,6 +35,15 @@ export default function RootLayout() {
       <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+        name="addBookModal"
+        options={{
+          // Set the presentation mode to modal for our modal route.
+          presentation: 'modal',
+          title: 'ADD BOOK'
+          
+        }}
+      />
       </Stack>
     </PaperProvider>
   );
