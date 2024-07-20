@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Image, ScrollView } from 'react-native';
 import { useTheme } from '@/hooks/ThemeProvider';
-import { useNavigation } from 'expo-router';
+import { useNavigation, useLocalSearchParams } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { Button, TextInput, Snackbar } from 'react-native-paper';
 import { bookGenresWithIcons } from '@/constants/data';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '@/redux/store';
-import { createBooksTable, addNewBook, fetchBooks } from '@/redux/booksSlice';
+import { fetchBooks, editBook } from '@/redux/booksSlice';
 
-const AddBookModal = () => {
+const EditBookModal = () => {
   const { theme } = useTheme();
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const bookStatus = useSelector((state: RootState) => state.books.status);
   const error = useSelector((state: RootState) => state.books.error);
+  const books = useSelector((state: RootState) => state.books.books);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [rate, setRate] = useState<number | null>(null);
   const [author, setAuthor] = useState('');
+  const [read, setRead] = useState<Number | undefined>();
   const [createdDate, setCreatedDate] = useState(new Date().toISOString());
   const [image, setImage] = useState<string | null>(null);
   const [genre, setGenre] = useState<string>(bookGenresWithIcons[1].genre);
@@ -37,14 +40,27 @@ const AddBookModal = () => {
   const [snackError, setSnackError] = useState(false);
 
   useEffect(() => {
-    dispatch(createBooksTable());
 
     navigation.setOptions({
       contentStyle: { backgroundColor: theme.colors.background },
       headerStyle: { backgroundColor: theme.colors.background },
       headerTintColor: theme.colors.onBackground,
     });
-  }, [dispatch, navigation, theme]);
+  }, [ navigation, theme]);
+
+  useEffect(() => {
+    const book = books.find((book) => book.id === Number(id));
+    if (book) {
+      setTitle(book.title);
+      setDescription(book.description);
+      setRate(book.rate);
+      setAuthor(book.author);
+      setCreatedDate(book.createdDate);
+      setImage(book.image);
+      setGenre(book.type);
+      setRead(book.read);
+    }
+  }, [id]);
 
   useEffect(() => {
     if (bookStatus === 'succeeded') {
@@ -65,7 +81,7 @@ const AddBookModal = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title || !description || !author || !rate || !genre) {
       setSnackError(true);
       setMessage('Please fill in all fields.');
@@ -73,7 +89,8 @@ const AddBookModal = () => {
       return;
     }
 
-    dispatch(addNewBook({
+    const data = {
+      id: Number(id),
       title,
       description,
       type: genre,
@@ -81,26 +98,20 @@ const AddBookModal = () => {
       image,
       author,
       createdDate,
-    })).then(() => {
-      if (bookStatus === 'succeeded') {
-        dispatch(fetchBooks());
-        setTitle("");
-        setDescription("");
-        setGenre("");
-        setRate(0);
-        setImage("");
-        setAuthor("");
-    
-        setSnackError(false);
-        setMessage('Book added successfully!');
-        setVisible(true);
-      } else if (bookStatus === 'failed') {
-        setSnackError(true);
-        setMessage(error || 'Failed to add book.');
-        setVisible(true);
-      }
-    });
-    
+      read: Number(read),
+    };
+
+    try {
+      await dispatch(editBook(data)).unwrap();
+      setSnackError(false);
+      setMessage('Book updated successfully!');
+      setVisible(true);
+      navigation.goBack();
+    } catch (err) {
+      setSnackError(true);
+      setMessage('Failed to update book.');
+      setVisible(true);
+    }
   };
 
   return (
@@ -108,13 +119,19 @@ const AddBookModal = () => {
       <TextInput
         label="Title"
         value={title}
-        onChangeText={setTitle}
+        onChangeText={(text) => {
+          console.log("Title: ", text);
+          setTitle(text);
+        }}
         style={styles.input}
       />
       <TextInput
         label="Description"
         value={description}
-        onChangeText={setDescription}
+        onChangeText={(text) => {
+          console.log("Description: ", text);
+          setDescription(text);
+        }}
         style={styles.input}
       />
       <TextInput
@@ -133,7 +150,10 @@ const AddBookModal = () => {
       <TextInput
         label="Author"
         value={author}
-        onChangeText={setAuthor}
+        onChangeText={(text) => {
+          console.log("Author: ", text);
+          setAuthor(text);
+        }}
         style={styles.input}
       />
       <DropDownPicker
@@ -150,7 +170,7 @@ const AddBookModal = () => {
       </Button>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       <Button mode="contained" onPress={handleSave} style={styles.button}>
-        Save Book
+        Update Book
       </Button>
       <Snackbar
         visible={visible}
@@ -182,4 +202,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddBookModal;
+export default EditBookModal;

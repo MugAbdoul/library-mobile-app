@@ -38,7 +38,17 @@ export const addBook = async (
         [title, description, type, rate, image, author, createdDate, read]
     );
 
-    return result.lastInsertRowId > 0;
+    return {
+        id: result.lastInsertRowId,
+        title: title,
+        description: description,
+        type: type,
+        rate: rate,
+        image: image,
+        author: author,
+        createdDate: createdDate,
+        read: read,
+    };
 };
 
 export const updateBookFavoritedStatus = async (id: number, read: number) => {
@@ -50,14 +60,6 @@ export const updateBookFavoritedStatus = async (id: number, read: number) => {
     
     return result.lastInsertRowId > 0;
 };
-
-// export const getBooks = async () => {
-//     const db = await SQLite.openDatabaseAsync(databaseName);
-//     const allRows = await db.getAllAsync('SELECT * FROM books');
-//     return allRows;
-// }
-
-  
 
 export const getBooks = async (): Promise<Book[]> => {
     const db = await SQLite.openDatabaseAsync(databaseName);
@@ -84,14 +86,28 @@ export const updateBook = async (
     image: any,
     author: string,
     createdDate: string,
+    read: number
 ) => {
+    console.log(image)
     const db = await SQLite.openDatabaseAsync(databaseName);
     const result = await db.runAsync(
         'UPDATE books SET title = ?, description = ?, type = ?, rate = ?, image = ?, author = ?, createdDate = ? WHERE id = ?',
         [title, description, type, rate, image, author, createdDate, id]
     );
+
+    console.log(image);
     
-    return result.lastInsertRowId > 0;
+    return {
+        id: id,
+        title: title,
+        description: description,
+        type: type,
+        rate: rate,
+        image: image,
+        author: author,
+        createdDate: createdDate,
+        read: read,
+    };
 }
 
 export const deleteBook = async (id: number) => {

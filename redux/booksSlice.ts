@@ -2,21 +2,18 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { createTable, addBook, updateBookFavoritedStatus, updateBook, deleteBook, getBooks } from '@/services/database';
 import { Book } from '@/constants/Book';
 
-
 interface BookState {
   books: Book[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
-// Define the initial state using that type
 const initialState: BookState = {
   books: [],
   status: 'idle',
   error: null,
 };
 
-// Thunks for async operations
 export const createBooksTable = createAsyncThunk('books/createTable', async () => {
   await createTable();
 });
@@ -41,7 +38,8 @@ export const addNewBook = createAsyncThunk(
 export const updateBookReadStatus = createAsyncThunk(
   'books/updateReadStatus',
   async ({ id, read }: { id: number; read: number }) => {
-    return await updateBookFavoritedStatus(id, read);
+    await updateBookFavoritedStatus(id, read);
+    return { id, read };
   }
 );
 
@@ -56,27 +54,25 @@ export const editBook = createAsyncThunk(
     image: any;
     author: string;
     createdDate: string;
+    read: number;
   }) => {
-    const { id, title, description, type, rate, image, author, createdDate } = bookData;
-    return await updateBook(id, title, description, type, rate, image, author, createdDate);
+    const { id, title, description, type, rate, image, author, createdDate, read } = bookData;
+    return await updateBook(id, title, description, type, rate, image, author, createdDate, read);
   }
 );
 
 export const removeBook = createAsyncThunk(
   'books/deleteBook',
   async (id: number) => {
-    return await deleteBook(id);
+    await deleteBook(id);
+    return id;
   }
 );
 
 export const fetchBooks = createAsyncThunk<Book[]>('books/getBooks', async () => {
   return await getBooks();
 });
-// export const fetchBooks = createAsyncThunk('books/getBooks', async () => {
-//     return await getBooks();
-//   });
 
-// Create the slice
 const booksSlice = createSlice({
   name: 'books',
   initialState,
@@ -96,11 +92,9 @@ const booksSlice = createSlice({
       .addCase(addNewBook.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(addNewBook.fulfilled, (state, action:any) => {
+      .addCase(addNewBook.fulfilled, (state, action: PayloadAction<Book>) => {
         state.status = 'succeeded';
         state.books.push(action.payload);
-        // Fetch books to update the state with the latest data
-        // fetchBooks();
       })
       .addCase(addNewBook.rejected, (state, action) => {
         state.status = 'failed';
@@ -109,8 +103,13 @@ const booksSlice = createSlice({
       .addCase(updateBookReadStatus.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(updateBookReadStatus.fulfilled, (state) => {
+      .addCase(updateBookReadStatus.fulfilled, (state, action: PayloadAction<{ id: number; read: number }>) => {
         state.status = 'succeeded';
+        const { id, read } = action.payload;
+        const bookIndex = state.books.findIndex((book) => book.id === id);
+        if (bookIndex !== -1) {
+          state.books[bookIndex] = { ...state.books[bookIndex], read };
+        }
       })
       .addCase(updateBookReadStatus.rejected, (state, action) => {
         state.status = 'failed';
@@ -119,8 +118,13 @@ const booksSlice = createSlice({
       .addCase(editBook.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(editBook.fulfilled, (state) => {
+      .addCase(editBook.fulfilled, (state, action: PayloadAction<Book>) => {
         state.status = 'succeeded';
+        const updatedBook = action.payload;
+        const bookIndex = state.books.findIndex((book) => book.id === updatedBook.id);
+        if (bookIndex !== -1) {
+          state.books[bookIndex] = updatedBook;
+        }
       })
       .addCase(editBook.rejected, (state, action) => {
         state.status = 'failed';
@@ -129,8 +133,9 @@ const booksSlice = createSlice({
       .addCase(removeBook.pending, (state) => {
         state.status = 'loading';
       })
-      .addCase(removeBook.fulfilled, (state) => {
+      .addCase(removeBook.fulfilled, (state, action: PayloadAction<number>) => {
         state.status = 'succeeded';
+        state.books = state.books.filter((book) => book.id !== action.payload);
       })
       .addCase(removeBook.rejected, (state, action) => {
         state.status = 'failed';

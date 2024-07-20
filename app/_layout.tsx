@@ -36,11 +36,19 @@ export default function RootLayout() {
       <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(book)/[id]" options={{ }} />
         <Stack.Screen
-        name="addBookModal"
-        options={{
-          presentation: 'modal',
-          title: 'ADD BOOK'
+            name="addBookModal"
+            options={{
+              presentation: 'modal',
+              title: 'ADD BOOK'
+        }}
+      />
+      <Stack.Screen
+            name="(edit)/[id]"
+            options={{
+              presentation: 'modal',
+              title: 'EDIT BOOK'
         }}
       />
       </Stack>
