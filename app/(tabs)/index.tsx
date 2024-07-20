@@ -1,19 +1,29 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { Button, FAB, Searchbar, Text, TextInput } from 'react-native-paper';
 import { Link, router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import BookFilterButtons from '@/components/BookFilterButtons';
+import BooksList from '@/components/BooksList';
 
 const Index = () => {
-    const { theme, toggleTheme } = useTheme();
+    const { theme } = useTheme();
     const [searchQuery, setSearchQuery] = React.useState('');
+
+    const [category, setCategory] = useState("All");
+    
+
+    const onGenreChanged = (category: string) => {
+        console.log("Categpry: ", category);
+        setCategory(category);
+    };
 
     return (
         <SafeAreaView style={[styles.container, {backgroundColor:theme.colors.background}]}>
-            <Text style={[styles.bookTitle]}>Book Library</Text>
+            {/* <Text style={[styles.bookTitle]}>Book Library</Text> */}
             <View style={styles.inputContainer}>
                 <Searchbar
                     placeholder="Search"
@@ -28,6 +38,9 @@ const Index = () => {
                         <FontAwesome name="send" size={24} color="white" />
                     </TouchableOpacity>
             </View>
+            <Text style={styles.booksTitle}>Books</Text>
+            <BookFilterButtons onGenreChanged={onGenreChanged}/>
+            <BooksList />
             <FAB
                 icon="plus"
                 style={styles.fab}
@@ -48,7 +61,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     inputContainer: {
-        marginTop: 20,
+        marginTop: 30,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
@@ -64,6 +77,11 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
       },
+    booksTitle: {
+        fontSize: 22,
+        fontWeight: '900',
+        marginTop: 20,
+    }
 });
 
 export default Index;

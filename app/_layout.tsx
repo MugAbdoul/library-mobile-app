@@ -2,16 +2,16 @@ import React, { useEffect } from 'react';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar, useColorScheme } from 'react-native';
-import { ThemeProvider as PaperProvider, useTheme } from '@/hooks/ThemeProvider'; // Adjust the import path as per your file structure
-import { DefaultTheme, DarkTheme } from '@react-navigation/native'; // Adjust the import based on your theme setup
+import { StatusBar } from 'react-native';
+import { ThemeProvider as PaperProvider, useTheme } from '@/hooks/ThemeProvider';
+import { Provider } from 'react-redux';
+import { store } from '@/redux/store';
 
 import 'react-native-reanimated';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const { theme } = useTheme();
 
   const [loaded] = useFonts({
@@ -31,6 +31,7 @@ export default function RootLayout() {
   }
 
   return (
+    <Provider store={store}>
     <PaperProvider>
       <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
       <Stack>
@@ -38,13 +39,12 @@ export default function RootLayout() {
         <Stack.Screen
         name="addBookModal"
         options={{
-          // Set the presentation mode to modal for our modal route.
           presentation: 'modal',
           title: 'ADD BOOK'
-          
         }}
       />
       </Stack>
     </PaperProvider>
+    </Provider>
   );
 }
