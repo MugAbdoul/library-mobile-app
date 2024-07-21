@@ -71,9 +71,9 @@ const Index = () => {
           value={searchQuery}
           style={{ padding: 0, flex: 1 }}
         />
-        <TouchableOpacity style={[styles.inputField, { backgroundColor: theme.colors.primary }]}>
+        {/* <TouchableOpacity style={[styles.inputField, { backgroundColor: theme.colors.primary }]}>
           <FontAwesome name="send" size={24} color="white" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <Text style={styles.booksTitle}>Books</Text>
       <BookFilterButtons onGenreChanged={onGenreChanged} genre={category}/>

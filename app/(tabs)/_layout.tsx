@@ -7,28 +7,16 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 
 const TabsLayout = () => {
   const { theme } = useTheme();
-  console.log(theme.dark);
   return (
     <ThemeProvider value={theme.dark ? DarkTheme : DefaultTheme}>
       <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
       <Tabs 
         screenOptions={{ 
           headerShown: false, 
-          // tabBarActiveTintColor: 'green'
           }}
           initialRouteName='index'
           >
-        
-        <Tabs.Screen 
-          name='search'
-          options={{
-            title: 'Search',
-            tabBarIcon:  ({ color, focused, size }) => (
-              <Ionicons name={focused? 'search' : 'search-sharp'} size={size} color={color}/>
-            ),
 
-          }}
-        />
         <Tabs.Screen 
           name='index'
           options={{

@@ -120,7 +120,7 @@ const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category, sear
       data={filteredAndSortedBooks}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
-      style={{ marginTop: 20 }}
+      style={{ marginTop: 10 }}
       ListEmptyComponent={ListEmptyComponent}
     />
   );

@@ -9,6 +9,7 @@ import { fetchBooks, updateBookReadStatus, removeBook, updateRate } from '@/redu
 import { useTheme } from '@/hooks/ThemeProvider';
 import { Snackbar, Text } from 'react-native-paper';
 import RatingModal from '@/components/RatingModal';
+import Rate from '@/components/Rate';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -146,7 +147,7 @@ const Book = () => {
           <Text style={styles.name}>{book?.title}</Text>
           <Text style={styles.location}>Type: {book?.type}</Text>
           <View style={{ flexDirection: 'row', gap: 4 }}>
-            <Ionicons name="star" size={16} />
+            <Ionicons name="star" color={theme.dark ? "yellow" : "black"} size={16} />
             <Text style={styles.ratings}>{book?.rate} reviews</Text>
           </View>
           <View style={styles.divider} />

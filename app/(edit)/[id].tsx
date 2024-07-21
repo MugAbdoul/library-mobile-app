@@ -120,7 +120,6 @@ const EditBookModal = () => {
         label="Title"
         value={title}
         onChangeText={(text) => {
-          console.log("Title: ", text);
           setTitle(text);
         }}
         style={styles.input}
@@ -129,29 +128,14 @@ const EditBookModal = () => {
         label="Description"
         value={description}
         onChangeText={(text) => {
-          console.log("Description: ", text);
           setDescription(text);
         }}
         style={styles.input}
       />
-      {/* <TextInput
-        label="Rate"
-        value={rate?.toString() || ''}
-        onChangeText={(text) => {
-            console.log("Rate: ", text);
-            const value = parseFloat(text);
-            if (!isNaN(value) || text === '') {
-            setRate(text === '' ? null : value);
-            }
-        }}
-        keyboardType="numeric"
-        style={[styles.input, disp]}
-        /> */}
       <TextInput
         label="Author"
         value={author}
         onChangeText={(text) => {
-          console.log("Author: ", text);
           setAuthor(text);
         }}
         style={styles.input}
