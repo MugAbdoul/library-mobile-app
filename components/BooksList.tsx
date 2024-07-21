@@ -105,12 +105,19 @@ const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category, sear
     return <Text>Error: {error}</Text>;
   }
 
+  const ListEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text style={styles.emptyText}>No books found</Text>
+    </View>
+  );
+
   return (
     <FlatList
       data={filteredAndSortedBooks}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       style={{ marginTop: 20 }}
+      ListEmptyComponent={ListEmptyComponent}
     />
   );
 };
@@ -140,6 +147,16 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
     fontSize: 12,
     borderRadius: 5,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: 'gray',
   },
 });
 

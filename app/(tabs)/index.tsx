@@ -47,16 +47,16 @@ const Index = () => {
       <View style={styles.sortContainer}>
         <Text>Sort by:</Text>
         <TouchableOpacity onPress={() => toggleSortOrder('title')}>
-          <Text style={[styles.sortOption, sortBy === 'title' && styles.activeSortOption]}>Title {sortBy === 'title' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
+          <Text style={[styles.sortOption, sortBy === 'title' && {color: theme.dark ? 'white' : 'black'}]}>Title {sortBy === 'title' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => toggleSortOrder('author')}>
-          <Text style={[styles.sortOption, sortBy === 'author' && styles.activeSortOption]}>Author {sortBy === 'author' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
+          <Text style={[styles.sortOption, sortBy === 'author' && {color: theme.dark ? 'white' : 'black'}]}>Author {sortBy === 'author' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => toggleSortOrder('rate')}>
-          <Text style={[styles.sortOption, sortBy === 'rate' && styles.activeSortOption]}>Rate {sortBy === 'rate' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
+          <Text style={[styles.sortOption, sortBy === 'rate' && {color: theme.dark ? 'white' : 'black'}]}>Rate {sortBy === 'rate' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => toggleSortOrder('date')}>
-          <Text style={[styles.sortOption, sortBy === 'date' && styles.activeSortOption]}>Date {sortBy === 'date' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
+          <Text style={[styles.sortOption, sortBy === 'date' && {color: theme.dark ? 'white' : 'black'}]}>Date {sortBy === 'date' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
         </TouchableOpacity>
       </View>
       <BooksList sortBy={sortBy} sortOrder={sortOrder} category={category} searchQuery={searchQuery} />
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   activeSortOption: {
-    color: 'black',
     fontWeight: 'bold',
   },
 });
