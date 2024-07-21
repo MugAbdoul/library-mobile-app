@@ -65,43 +65,54 @@ const AddBookModal = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title || !description || !author || !genre) {
       setSnackError(true);
       setMessage('Please fill in all fields.');
       setVisible(true);
       return;
     }
-
-    dispatch(addNewBook({
-      title,
-      description,
-      type: genre,
-      rate,
-      image,
-      author,
-      createdDate,
-    })).then(() => {
-      if (bookStatus === 'succeeded') {
-        dispatch(fetchBooks());
+  
+    try {
+      setSnackError(false);
+      setMessage('Saving book...');
+      setVisible(true);
+  
+      const actionResult = await dispatch(addNewBook({
+        title,
+        description,
+        type: genre,
+        rate,
+        image,
+        author,
+        createdDate,
+      }));
+  
+      if (addNewBook.fulfilled.match(actionResult)) {
+        // Successfully added, now fetch the books
+        await dispatch(fetchBooks());
+        // Reset fields
         setTitle("");
         setDescription("");
         setGenre("");
         setRate(0);
-        setImage("");
+        setImage(null);
         setAuthor("");
-    
-        setSnackError(false);
         setMessage('Book added successfully!');
-        setVisible(true);
-      } else if (bookStatus === 'failed') {
+      } else {
+        // Failed to add book
         setSnackError(true);
         setMessage(error || 'Failed to add book.');
-        setVisible(true);
       }
-    });
-    
+    } catch (error) {
+      setSnackError(true);
+      setMessage('An error occurred.');
+    } finally {
+      setVisible(true);
+    }
   };
+  
+  
 
   return (
     <ScrollView style={{ backgroundColor: theme.colors.background, paddingHorizontal: 16 }}>
@@ -117,19 +128,6 @@ const AddBookModal = () => {
         onChangeText={setDescription}
         style={styles.input}
       />
-      {/* <TextInput
-        label="Rate"
-        value={rate?.toString() || ''}
-        onChangeText={(text) => {
-            console.log("Rate: ", text);
-            const value = parseFloat(text);
-            if (!isNaN(value) || text === '') {
-            setRate(text === '' ? null : value);
-            }
-        }}
-        keyboardType="numeric"
-        style={styles.input}
-        /> */}
       <TextInput
         label="Author"
         value={author}

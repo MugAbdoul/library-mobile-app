@@ -38,7 +38,7 @@ export const addBook = async (
         [title, description, type, rate, image, author, createdDate, read]
     );
 
-    return {
+    const data = {
         id: result.lastInsertRowId,
         title: title,
         description: description,
@@ -49,6 +49,8 @@ export const addBook = async (
         createdDate: createdDate,
         read: read,
     };
+
+    return data;
 };
 
 export const updateBookFavoritedStatus = async (id: number, read: number) => {

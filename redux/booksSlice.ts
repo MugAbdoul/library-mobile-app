@@ -102,6 +102,9 @@ const booksSlice = createSlice({
       })
       .addCase(addNewBook.fulfilled, (state, action: PayloadAction<Book>) => {
         state.status = 'succeeded';
+        console.log("-----------------------------------------------------");
+        console.log(action.payload);
+        console.log("-----------------------------------------------------");
         state.books.push(action.payload);
       })
       .addCase(addNewBook.rejected, (state, action) => {
