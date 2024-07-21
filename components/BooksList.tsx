@@ -70,7 +70,7 @@ const BooksList = () => {
       data={books}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
-      style={{ marginTop: 10 }}
+      style={{ marginTop: 20 }}
     />
   );
 };
@@ -78,7 +78,7 @@ const BooksList = () => {
 const styles = StyleSheet.create({
   bookContainer: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 7,
     borderRadius: 5,
   },
   title: {
