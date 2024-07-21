@@ -59,7 +59,7 @@ const Index = () => {
           <Text style={[styles.sortOption, sortBy === 'date' && styles.activeSortOption]}>Date {sortBy === 'date' && (sortOrder === 'asc' ? '▲' : '▼')}</Text>
         </TouchableOpacity>
       </View>
-      <BooksList sortBy={sortBy} sortOrder={sortOrder} category={category} />
+      <BooksList sortBy={sortBy} sortOrder={sortOrder} category={category} searchQuery={searchQuery} />
       <FAB
         icon="plus"
         style={styles.fab}
