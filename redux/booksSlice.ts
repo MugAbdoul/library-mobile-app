@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { createTable, addBook, updateBookFavoritedStatus, updateBook, deleteBook, getBooks } from '@/services/database';
+import { createTable, addBook, updateBookFavoritedStatus, updateBook, deleteBook, getBooks, updateBookRate } from '@/services/database';
 import { Book } from '@/constants/Book';
 
 interface BookState {
@@ -40,6 +40,14 @@ export const updateBookReadStatus = createAsyncThunk(
   async ({ id, read }: { id: number; read: number }) => {
     await updateBookFavoritedStatus(id, read);
     return { id, read };
+  }
+);
+
+export const updateRate = createAsyncThunk(
+  'books/updateRate',
+  async ({ id, rate }: { id: number; rate: number }) => {
+    await updateBookRate(id, rate);
+    return { id, rate };
   }
 );
 
@@ -112,6 +120,21 @@ const booksSlice = createSlice({
         }
       })
       .addCase(updateBookReadStatus.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message || 'Failed to update read status';
+      })
+      .addCase(updateRate.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateRate.fulfilled, (state, action: PayloadAction<{ id: number; rate: number }>) => {
+        state.status = 'succeeded';
+        const { id, rate } = action.payload;
+        const bookIndex = state.books.findIndex((book) => book.id === id);
+        if (bookIndex !== -1) {
+          state.books[bookIndex] = { ...state.books[bookIndex], rate };
+        }
+      })
+      .addCase(updateRate.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message || 'Failed to update read status';
       })

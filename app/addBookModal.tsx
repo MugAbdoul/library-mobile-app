@@ -19,7 +19,7 @@ const AddBookModal = () => {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [rate, setRate] = useState<number | null>(null);
+  const [rate, setRate] = useState<number | null>(0);
   const [author, setAuthor] = useState('');
   const [createdDate, setCreatedDate] = useState(new Date().toISOString());
   const [image, setImage] = useState<string | null>(null);
@@ -66,7 +66,7 @@ const AddBookModal = () => {
   };
 
   const handleSave = () => {
-    if (!title || !description || !author || !rate || !genre) {
+    if (!title || !description || !author || !genre) {
       setSnackError(true);
       setMessage('Please fill in all fields.');
       setVisible(true);
@@ -117,7 +117,7 @@ const AddBookModal = () => {
         onChangeText={setDescription}
         style={styles.input}
       />
-      <TextInput
+      {/* <TextInput
         label="Rate"
         value={rate?.toString() || ''}
         onChangeText={(text) => {
@@ -129,7 +129,7 @@ const AddBookModal = () => {
         }}
         keyboardType="numeric"
         style={styles.input}
-        />
+        /> */}
       <TextInput
         label="Author"
         value={author}

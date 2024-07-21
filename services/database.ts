@@ -61,6 +61,16 @@ export const updateBookFavoritedStatus = async (id: number, read: number) => {
     return result.lastInsertRowId > 0;
 };
 
+export const updateBookRate = async (id: number, rate: number) => {
+    const db = await SQLite.openDatabaseAsync(databaseName);
+    const result = await db.runAsync(
+        'UPDATE books SET rate = ? WHERE id = ?',
+        [rate, id]
+    );
+    
+    return result.lastInsertRowId > 0;
+};
+
 export const getBooks = async (): Promise<Book[]> => {
     const db = await SQLite.openDatabaseAsync(databaseName);
     const allRows = await db.getAllAsync('SELECT * FROM books');

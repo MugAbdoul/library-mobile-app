@@ -5,9 +5,10 @@ import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewO
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { fetchBooks, updateBookReadStatus, removeBook } from '@/redux/booksSlice';
+import { fetchBooks, updateBookReadStatus, removeBook, updateRate } from '@/redux/booksSlice';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { Snackbar, Text } from 'react-native-paper';
+import RatingModal from '@/components/RatingModal';
 
 const { width } = Dimensions.get('window');
 const IMG_HEIGHT = 300;
@@ -19,6 +20,11 @@ const Book = () => {
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const dispatch = useDispatch<AppDispatch>();
   const { books, status, error } = useSelector((state: RootState) => state.books);
+
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [snackError, setSnackError] = useState(false);
+  const [ratingModalVisible, setRatingModalVisible] = useState(false);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -36,10 +42,6 @@ const Book = () => {
       setVisible(true);
     }
   };
-
-  const [visible, setVisible] = useState(false);
-  const [message, setMessage] = useState('');
-  const [snackError, setSnackError] = useState(false);
 
   const handleDelete = () => {
     if (book) {
@@ -64,6 +66,15 @@ const Book = () => {
     }
   };
 
+  const handleRatingSubmit = (rating: number) => {
+    if (book) {
+      dispatch(updateRate({ id: Number(book.id), rate: rating }));
+      setSnackError(false);
+      setMessage(`Rating updated to ${rating} stars successfully`);
+      setVisible(true);
+    }
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: '',
@@ -80,13 +91,16 @@ const Book = () => {
             <Ionicons name="trash-outline" size={27} color={!theme.dark ? theme.colors.errorContainer : theme.colors.onErrorContainer} />
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={() => router.push(`/(edit)/${book?.id}`)}
+            onPress={() => router.push(`/(edit)/${book?.id}`)}
             style={[styles.roundButton, { backgroundColor: theme.dark ? theme.colors.primaryContainer : theme.colors.onPrimaryContainer }]}
           >
             <Ionicons name="pencil" size={27} color={!theme.dark ? theme.colors.primaryContainer : theme.colors.onPrimaryContainer} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.roundButton} onPress={toggleFavoriteStatus}>
             <Ionicons name={book?.read ? "checkmark-done-circle-sharp" : "checkmark-done-circle-outline"} size={36} color={'#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.roundButton} onPress={() => setRatingModalVisible(true)}>
+            <Ionicons name="star" size={27} color={'#000'} />
           </TouchableOpacity>
         </View>
       ),
@@ -157,6 +171,12 @@ const Book = () => {
       >
         {message}
       </Snackbar>
+      <RatingModal
+        visible={ratingModalVisible}
+        onClose={() => setRatingModalVisible(false)}
+        onSubmit={handleRatingSubmit}
+        currentRating={book?.rate}
+      />
     </View>
   );
 };

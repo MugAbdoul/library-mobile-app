@@ -82,7 +82,7 @@ const EditBookModal = () => {
   };
 
   const handleSave = async () => {
-    if (!title || !description || !author || !rate || !genre) {
+    if (!title || !description || !author || !genre) {
       setSnackError(true);
       setMessage('Please fill in all fields.');
       setVisible(true);
@@ -134,7 +134,7 @@ const EditBookModal = () => {
         }}
         style={styles.input}
       />
-      <TextInput
+      {/* <TextInput
         label="Rate"
         value={rate?.toString() || ''}
         onChangeText={(text) => {
@@ -145,8 +145,8 @@ const EditBookModal = () => {
             }
         }}
         keyboardType="numeric"
-        style={styles.input}
-        />
+        style={[styles.input, disp]}
+        /> */}
       <TextInput
         label="Author"
         value={author}
