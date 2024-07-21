@@ -14,9 +14,10 @@ interface BooksListProps {
   sortBy: string;
   sortOrder: 'asc' | 'desc';
   category: string;
+  searchQuery: string;
 }
 
-const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category }) => {
+const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category, searchQuery }) => {
   const { theme } = useTheme();
   const linkTo = useLinkTo();
 
@@ -54,8 +55,19 @@ const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category }) =>
   };
 
   const filterBooks = (books: Book[]) => {
-    if (category === "All") return books;
-    return books.filter(book => book.type === category);
+    let filteredBooks = books;
+    if (category !== "All") {
+      filteredBooks = filteredBooks.filter(book => book.type === category);
+    }
+    if (searchQuery) {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      filteredBooks = filteredBooks.filter(book => 
+        book.title.toLowerCase().includes(lowerCaseQuery) ||
+        book.author.toLowerCase().includes(lowerCaseQuery) ||
+        book.description.toLowerCase().includes(lowerCaseQuery)
+      );
+    }
+    return filteredBooks;
   };
 
   const filteredAndSortedBooks = sortBooks(filterBooks(books));
