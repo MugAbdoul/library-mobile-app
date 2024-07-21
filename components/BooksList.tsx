@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchBooks } from '@/redux/booksSlice';
 import { RootState, AppDispatch } from '@/redux/store';
 import { Book } from '@/constants/Book';
-import { Text } from 'react-native-paper';
+import { ActivityIndicator, Text } from 'react-native-paper';
 import Rate from './Rate';
 import { useTheme } from '@/hooks/ThemeProvider';
 import { useLinkTo } from '@react-navigation/native';
@@ -98,7 +98,11 @@ const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category, sear
   );
 
   if (status === 'loading') {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
+    );
   }
 
   if (status === 'failed') {
@@ -157,6 +161,12 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: 'gray',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
 });
 
