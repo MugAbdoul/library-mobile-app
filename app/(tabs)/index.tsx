@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,13 +8,46 @@ import { router } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import BookFilterButtons from '@/components/BookFilterButtons';
 import BooksList from '@/components/BooksList';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Index = () => {
   const { theme } = useTheme();
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState("All");
   const [sortBy, setSortBy] = useState("title");
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const savedCategory = await AsyncStorage.getItem('category');
+        const savedSortBy = await AsyncStorage.getItem('sortBy');
+        const savedSortOrder = await AsyncStorage.getItem('sortOrder');
+
+        if (savedCategory !== null) setCategory(savedCategory);
+        if (savedSortBy !== null) setSortBy(savedSortBy);
+        if (savedSortOrder !== null) setSortOrder(savedSortOrder as 'asc' | 'desc');
+      } catch (error) {
+        console.error('Failed to load preferences:', error);
+      }
+    };
+
+    loadPreferences();
+  }, []);
+
+  useEffect(() => {
+    const savePreferences = async () => {
+      try {
+        await AsyncStorage.setItem('category', category);
+        await AsyncStorage.setItem('sortBy', sortBy);
+        await AsyncStorage.setItem('sortOrder', sortOrder);
+      } catch (error) {
+        console.error('Failed to save preferences:', error);
+      }
+    };
+
+    savePreferences();
+  }, [category, sortBy, sortOrder]);
 
   const onGenreChanged = (category: string) => {
     setCategory(category);
@@ -43,7 +76,7 @@ const Index = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.booksTitle}>Books</Text>
-      <BookFilterButtons onGenreChanged={onGenreChanged} />
+      <BookFilterButtons onGenreChanged={onGenreChanged} genre={category}/>
       <View style={styles.sortContainer}>
         <Text>Sort by:</Text>
         <TouchableOpacity onPress={() => toggleSortOrder('title')}>
@@ -67,7 +100,7 @@ const Index = () => {
       />
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -106,9 +139,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     fontSize: 16,
     color: 'grey',
-  },
-  activeSortOption: {
-    fontWeight: 'bold',
   },
 });
 

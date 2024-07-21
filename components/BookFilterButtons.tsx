@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from 'react-native-paper';
 import { bookGenresWithIcons } from '@/constants/data';
@@ -7,13 +7,23 @@ import { useTheme } from '@/hooks/ThemeProvider';
 
 type Props = {
     onGenreChanged: (genre: string) => void;
+    genre: string;
 }
 
-const BookFilterButtons = ({ onGenreChanged }: Props) => {
+const BookFilterButtons = ({ onGenreChanged, genre }: Props) => {
     const { theme } = useTheme();
     const scrollRef = useRef<ScrollView>(null);
     const itemRef = useRef<TouchableOpacity[] | null[]>([]);
     const [activeIndex, setActiveIndex] = useState(0);
+
+    useEffect(()=> {
+        if(genre){
+            const genreIndex = bookGenresWithIcons.findIndex(book => book.genre === genre);
+            if(genreIndex){
+                handleSelectCategory(genreIndex);
+            }
+        }
+    }, [genre])
 
     const handleSelectCategory = (index: number) => {
         const selected = itemRef.current[index];
