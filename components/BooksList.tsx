@@ -6,13 +6,16 @@ import { RootState, AppDispatch } from '@/redux/store';
 import { Book } from '@/constants/Book';
 import { Text } from 'react-native-paper';
 import Rate from './Rate';
-import Favoured from './Favoured';
 import { useTheme } from '@/hooks/ThemeProvider';
-import { useNavigation } from 'expo-router';
-import { useLinkTo, useRoute } from '@react-navigation/native';
+import { useLinkTo } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
-const BooksList = () => {
+interface BooksListProps {
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder }) => {
   const { theme } = useTheme();
   const linkTo = useLinkTo();
 
@@ -25,17 +28,36 @@ const BooksList = () => {
     }
   }, [status, dispatch]);
 
+  const sortBooks = (books: Book[]) => {
+    const sortedBooks = [...books].sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case 'title':
+          comparison = a.title.localeCompare(b.title);
+          break;
+        case 'author':
+          comparison = a.author.localeCompare(b.author);
+          break;
+        case 'rate':
+          comparison = b.rate - a.rate;
+          break;
+        case 'date':
+          comparison = new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime();
+          break;
+        default:
+          break;
+      }
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+    return sortedBooks;
+  };
+
+  const sortedBooks = sortBooks(books);
+
   const renderItem = ({ item }: { item: Book }) => (
     <TouchableOpacity 
-      style={
-        [
-          styles.bookContainer,
-           { 
-            backgroundColor: theme.colors.backdrop 
-          }
-        ]
-      }
-      onPress={()=> linkTo(`/(book)/${item.id}`)}
+      style={[styles.bookContainer, { backgroundColor: theme.colors.backdrop }]}
+      onPress={() => linkTo(`/(book)/${item.id}`)}
     >
       <View>
         {item.image && <Image source={{ uri: item.image }} style={styles.image} />}
@@ -48,10 +70,10 @@ const BooksList = () => {
           <Text style={[styles.type, { backgroundColor: theme.dark ? theme.colors.onPrimary : theme.colors.primary }]}>{item.type}</Text>
           <Rate rate={item.rate} />
           <Ionicons
-              name={item.read ? "checkmark-done-circle-sharp" : "checkmark-done-circle-outline"}
-              size={27}
-              color={item.read ? theme.colors.primary : "black"}
-            />
+            name={item.read ? "checkmark-done-circle-sharp" : "checkmark-done-circle-outline"}
+            size={27}
+            color={item.read ? theme.colors.primary : "black"}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -67,7 +89,7 @@ const BooksList = () => {
 
   return (
     <FlatList
-      data={books}
+      data={sortedBooks}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       style={{ marginTop: 20 }}
