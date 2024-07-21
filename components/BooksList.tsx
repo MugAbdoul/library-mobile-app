@@ -13,9 +13,10 @@ import { Ionicons } from '@expo/vector-icons';
 interface BooksListProps {
   sortBy: string;
   sortOrder: 'asc' | 'desc';
+  category: string;
 }
 
-const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder }) => {
+const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder, category }) => {
   const { theme } = useTheme();
   const linkTo = useLinkTo();
 
@@ -52,7 +53,12 @@ const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder }) => {
     return sortedBooks;
   };
 
-  const sortedBooks = sortBooks(books);
+  const filterBooks = (books: Book[]) => {
+    if (category === "All") return books;
+    return books.filter(book => book.type === category);
+  };
+
+  const filteredAndSortedBooks = sortBooks(filterBooks(books));
 
   const renderItem = ({ item }: { item: Book }) => (
     <TouchableOpacity 
@@ -89,7 +95,7 @@ const BooksList: React.FC<BooksListProps> = ({ sortBy, sortOrder }) => {
 
   return (
     <FlatList
-      data={sortedBooks}
+      data={filteredAndSortedBooks}
       renderItem={renderItem}
       keyExtractor={(item) => item.id.toString()}
       style={{ marginTop: 20 }}
