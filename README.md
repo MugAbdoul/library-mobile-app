@@ -15,24 +15,6 @@ A cross-platform mobile application developed using React Native for managing a 
 - **Favorite Books**: Filter books to show only those marked as favorites.
 - **User Preferences**: Store sorting order and other preferences using Shared Preferences.
 
-## Screenshots
-
-### Light mode
-
-<img src="./assets/images/light_home.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/light_add.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/light_book.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/light_rate.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/light_setting.jpeg" alt="Books List" width="220"/>
-
-### Dark mode
-
-<img src="./assets/images/dark_home.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/dark_add.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/dark_book.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/dark_rate.jpeg" alt="Books List" width="220"/>
-<img src="./assets/images/setting.jpeg" alt="Books List" width="220"/>
-
 ## Getting Started
 
 1. Clone the Repository
@@ -58,3 +40,21 @@ A cross-platform mobile application developed using React Native for managing a 
 
    - Scan the QR code with the Expo Go app (available on iOS and Android) to run the app on your mobile device.
    - Alternatively, run the app on an Android/iOS emulator.
+
+## Screenshots
+
+### Light mode
+
+<img src="./assets/images/light_home.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/light_add.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/light_book.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/light_rate.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/light_setting.jpeg" alt="Books List" width="220"/>
+
+### Dark mode
+
+<img src="./assets/images/dark_home.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/dark_add.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/dark_book.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/dark_rate.jpeg" alt="Books List" width="220"/>
+<img src="./assets/images/setting.jpeg" alt="Books List" width="220"/>
